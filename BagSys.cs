@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BagSys : MonoBehaviour
 {
-    //ƒtƒ‹[ƒc‰ñûâÄ‚ÌƒXƒNƒŠƒvƒg
+    //ãƒ•ãƒ«ãƒ¼ãƒ„å›åç± ã®ã‚¹ã‚¯ãƒªãƒ—ãƒˆ
 
     public AudioSource ItemGetSE;
 
@@ -12,29 +12,10 @@ public class BagSys : MonoBehaviour
     {
       if (other.gameObject.tag == "fruits")
       {
-        Debug.Log("ƒtƒ‹[ƒc‚ğE‚Á‚½");
+        Debug.Log("ãƒ•ãƒ«ãƒ¼ãƒ„ã‚’æ‹¾ã£ãŸ");
         GameObject.Find("GAMESYSTEM").GetComponent<GameSys>().Count();
         ItemGetSE.Play();
-     @ Destroy(other.gameObject,0.0f);   
+     ã€€ Destroy(other.gameObject,0.0f);   
       }
     }
-
-
-
-    /*BagƒIƒuƒWƒFƒNƒg(Meshcollider)‚Æƒtƒ‹[ƒcƒIƒuƒWƒFƒNƒg‚ğOncorillsion‚Å
-      Õ“Ë”»’è‚ğİ’è‚µÀs‚·‚é‚ÆUnityã‚Å‚Íˆ—‚³‚ê‚é‚ªAÀÛ‚ÉMeta2‚Åƒtƒ‹[ƒc‚ğ’Í‚ñ‚Å
-    @Bag‚É“ü‚ê‚Ä‚à”½‰‚µ‚È‚©‚Á‚½B
-    @OnTrigger‚Å‚ ‚ê‚Îˆ—‚³‚ê‚½
-     
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.tag == "fruits")
-        {
-            Debug.Log("ƒtƒ‹[ƒc‚ğE‚Á‚½");
-            GameObject.Find("GAMESYSTEM").GetComponent<GameSys>().Count();
-            ItemGetSE.Play();
-        }
-
-    }*/
-
 }
