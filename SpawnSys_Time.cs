@@ -14,8 +14,8 @@ public class SpawnSys_Time : MonoBehaviour
      public GameObject SpawnObj;
 
     [Header("Set Interval Min and Max")]//ヘッダー
-    [Range(1f, 4f)]public float minTime;//生成時間間隔の最小値
-    [Range(5f, 10f)]public float maxTime;//生成時間間隔の最大値
+    [Range(1f, 10f)]public float minTime;//生成時間間隔の最小値
+    [Range(1f, 10f)]public float maxTime;//生成時間間隔の最大値
   
     [Header("Set XYZ Position Min and Max")]//ヘッダー
     [Range(-24f, 25f)] public float xMinPosi;

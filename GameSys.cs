@@ -15,7 +15,7 @@ public class GameSys : MonoBehaviour
   　　コメント表示非表示など*/
 
 
-    [Header("BattlePoint")]
+    [Header("BattleStatus")]
     [Range(1,10)] public int MaxHP;
     [Range(1, 10)] public int TrexAttack;
 
@@ -59,9 +59,13 @@ public class GameSys : MonoBehaviour
 
     void BattleDamege()//ダメージ量によって画面が赤くなる
     {
-        if (PlayerHP > 3)
+        if (PlayerHP == MaxHP)
         {
             vignette.intensity.value = 0.0f; //ビネット効果の実行
+        }
+        else if (PlayerHP == 4)
+        {
+            vignette.intensity.value = 0.1f;
         }
         else if (PlayerHP == 3)
         {
@@ -73,7 +77,7 @@ public class GameSys : MonoBehaviour
         }
         else if (PlayerHP == 1)
         {
-            vignette.intensity.value = 0.7f;
+            vignette.intensity.value = 0.8f;
         }
         else if (PlayerHP == 0)
         {

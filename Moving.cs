@@ -39,6 +39,7 @@ public class Moving : MonoBehaviour
           player = GameObject.FindGameObjectWithTag("Player");
       }
       GAMESYS = GAMESYSTEM.GetComponent<GameSys>();//GameSys.scを取得、以降のコードでscの変数を使用する
+      forestPoint = forestObj.transform.position;//一定確立でフィールドの中心に呼出すための変数、Inforest関数で使う
     }
 
     public void AnimStop()
@@ -75,12 +76,11 @@ public class Moving : MonoBehaviour
     void InForest()//一定確立で森の中に移動させる
     {
         Debug.Log("森の中がよばれた");
-        forestPoint = forestObj.transform.position;
-        Vector3 NextPosi = new Vector3(forestPoint.x,0,forestPoint.z);
-        agent.speed = walkingSpeed;//歩くスピードを変数から代入する       
-        agent.SetDestination(NextPosi);//目的地を設定
+        Vector3 NextPosi = new Vector3(forestPoint.x, 0, forestPoint.z);
+        agent.speed = walkingSpeed;   
+        agent.SetDestination(NextPosi);
         agent.stoppingDistance = 0; 
-        animator.SetBool("WALK", true);//アニメーションを呼出す
+        animator.SetBool("WALK", true);
         TrexWalkFootStep(WalkStepSE);      
     }
 
@@ -158,12 +158,12 @@ public class Moving : MonoBehaviour
             switch (state)
             {
                 case STATE.IDLE:
-
+                    Debug.Log("IDLEがよばれた");
                     if (CanSeePlayer())
                     {
                         state = STATE.CHASE;
                     }
-                    else if (Random.Range(0, 1000) < 5)
+                    else if (Random.Range(0, 250) < 1)
                     {
                         agent.ResetPath();  //目的値のリセット
                         state = STATE.WALK;
@@ -175,15 +175,10 @@ public class Moving : MonoBehaviour
                                        //目的地(SetDestinationで設定)が有ればTrueが返ってくる               
                     {
                         TrexHowl.Stop(); //IDELから切り替わった際に咆哮を止める
-                        if (Random.Range(0, 2000) < 5)//ランダムで森の中に戻す
-                        {
-                            InForest();
-                            state = STATE.IDLE; //アイドル状態に遷移  
-                        }
-                        Debug.Log("WALKがよばれた");
+                                Debug.Log("WALKがよばれた");
                         float newX = transform.position.x + Random.Range(-10f,10f);
                         float newZ = transform.position.z + Random.Range(-10f,10f);
-                        Vector3 NextPos = new Vector3(newX, transform.position.y, newZ);//ゾンビのY軸は変更させない
+                        Vector3 NextPos = new Vector3(newX, transform.position.y, newZ);
                         /*配置している木のオブジェクトと同じ座標が選ばれたら再度計算するスクリプトを追加したい
                         if(NextPos == treeObj.transform.position)
                         { 
@@ -197,16 +192,16 @@ public class Moving : MonoBehaviour
                         TrexWalkFootStep(WalkStepSE);
                     }
 
-                    if (Random.Range(0, 2500) < 5)//ランダムでIDEL
+                    if (Random.Range(0, 2500) < 1)//ランダムで森の中に戻す
                     {
-                        Debug.Log("IDLEがよばれた");
-                        agent.ResetPath();  //目的地のリセット
-                        StopStep();
-                        state = STATE.IDLE; //アイドル状態に遷移
+                        Debug.Log("Inforest");
+                        InForest();
                     }
+
 
                     if (CanSeePlayer())//プレイヤーを発見したらCHASEモード
                     {
+                        AnimStop();
                         state = STATE.CHASE;
                     }
                     break;
@@ -214,12 +209,11 @@ public class Moving : MonoBehaviour
                 case STATE.CHASE:
                     agent.SetDestination(player.transform.position);//プレイヤーの位置を目的地に設定
                     agent.stoppingDistance = 5;
-                    AnimStop();
                     agent.speed = runSpeed;
                     animator.SetBool("CHASE", true);
                     TrexBite.Stop();
                     if (agent.remainingDistance <= agent.stoppingDistance)//remainは目的地とagentの距離
-                    {
+                    {                     
                         state = STATE.ATTACK;
                     }                   
                     if (ForGetPlayer())
@@ -231,14 +225,15 @@ public class Moving : MonoBehaviour
                     break;
 
                 case STATE.ATTACK:
-                    AnimStop();
+                     AnimStop();
                      animator.SetBool("ATTACK", true);
-                     TrexFootStep.Stop();//走るSEを止める
+                     //TrexFootStep.Stop();//走るSEを止める
                      if (DistanceToPlayer() > agent.stoppingDistance)//距離が離れたらCHAS
                      {
                          state = STATE.CHASE;
                      }                 
                     break;
+
                 case STATE.DAMEGE:
                     Debug.Log("石があたった");
                     animator.SetBool("DAMEGE", true);
