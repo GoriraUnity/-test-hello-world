@@ -88,10 +88,8 @@ public class Moving : MonoBehaviour
     {
         if (collision.gameObject.tag == "stone")
         {
-            AnimStop();
-            agent.SetDestination(new Vector3(transform.position.x, transform.position.y, transform.position.z));
-            agent.stoppingDistance = 0;
-            stoneAttack.Play(); 
+            stoneAttack.Play();
+            AnimStop();//Animationが切替わるタイミングで呼出し、対象のアニメーションを呼出す
             StopStep();
             Destroy(collision.gameObject,0.0f);    
             state = STATE.DAMEGE;  
@@ -174,8 +172,11 @@ public class Moving : MonoBehaviour
                     if (!agent.hasPath)//.hasPathはNevMesh関数の目的地を持っているかどうか確認する関数
                                        //目的地(SetDestinationで設定)が有ればTrueが返ってくる               
                     {
+                        AnimStop();
                         TrexHowl.Stop(); //IDELから切り替わった際に咆哮を止める
-                                Debug.Log("WALKがよばれた");
+                        animator.SetBool("WALK", true);
+                        TrexWalkFootStep(WalkStepSE);
+                        Debug.Log("WALKがよばれた");
                         float newX = transform.position.x + Random.Range(-10f,10f);
                         float newZ = transform.position.z + Random.Range(-10f,10f);
                         Vector3 NextPos = new Vector3(newX, transform.position.y, newZ);
@@ -185,11 +186,8 @@ public class Moving : MonoBehaviour
                           state = STATE.WALK;              
                         }*/
                         agent.SetDestination(NextPos);
-                        agent.stoppingDistance = 0; //目的値からオブジェクトの止まる距離の設定、0は目的地と同じポジション
-                        AnimStop();
+                        agent.stoppingDistance = 0; //目的値からオブジェクトの止まる距離の設定、0は目的地と同じポジション       
                         agent.speed = walkingSpeed;
-                        animator.SetBool("WALK", true);
-                        TrexWalkFootStep(WalkStepSE);
                     }
 
                     if (Random.Range(0, 2500) < 1)//ランダムで森の中に戻す
@@ -207,10 +205,10 @@ public class Moving : MonoBehaviour
                     break;
 
                 case STATE.CHASE:
+                    animator.SetBool("CHASE", true);
                     agent.SetDestination(player.transform.position);//プレイヤーの位置を目的地に設定
                     agent.stoppingDistance = 5;
                     agent.speed = runSpeed;
-                    animator.SetBool("CHASE", true);
                     TrexBite.Stop();
                     if (agent.remainingDistance <= agent.stoppingDistance)//remainは目的地とagentの距離
                     {                     
@@ -236,6 +234,8 @@ public class Moving : MonoBehaviour
 
                 case STATE.DAMEGE:
                     Debug.Log("石があたった");
+                    agent.SetDestination(new Vector3(transform.position.x, transform.position.y, transform.position.z));
+                    agent.stoppingDistance = 0;
                     animator.SetBool("DAMEGE", true);
                     StopStep();
                     Invoke("Revival", RevivalTime);
@@ -250,7 +250,7 @@ public class Moving : MonoBehaviour
 
     public void Revival()//STATE.DAMEGEの時に呼ばれる
     {
-        state = STATE.WALK;
+        state = STATE.IDLE;
     }
 
     public void GameStop()
